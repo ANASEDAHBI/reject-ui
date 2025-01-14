@@ -10,6 +10,7 @@ export class AppComponent {
   sqlFile: File | null = null;
   textFile: File | null = null;
   responseMessage: string = '';
+  isSqlResponse: boolean = false;
 
   constructor(private apiService: ApiService) {}
 
@@ -41,9 +42,10 @@ export class AppComponent {
     
 
   onAnalyze() {
+    this.isSqlResponse = false;
     this.apiService.analyzeFiles().subscribe({
       next: (response) => {
-        this.responseMessage = 'Analyse terminée : ' + JSON.stringify(response);
+        this.responseMessage = JSON.parse(response);
       },
       error: (error) => {
         this.responseMessage = `Erreur: ${error.message}`;
@@ -52,9 +54,10 @@ export class AppComponent {
   }
 
   onRecycle() {
+    this.isSqlResponse = true;
     this.apiService.recycleScript().subscribe({
       next: (response) => {
-        this.responseMessage = 'Script généré : ' + response;
+        this.responseMessage = response;
       },
       error: (error) => {
         this.responseMessage = `Erreur: ${error.message}`;

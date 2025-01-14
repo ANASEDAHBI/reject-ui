@@ -6,9 +6,21 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:8080/api'; // URL de ton API backend
+  private apiUrl: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    // Détection de l'URL dynamique
+    const currentHost = window.location.host; // Récupère le domaine actuel
+    const regex = /^rejects-production-[a-zA-Z0-9]+\.up\.railway\.app$/; // RegExp pour valider le domaine
+
+    if (regex.test(currentHost)) {
+      this.apiUrl = `https://${currentHost}/api`; // Utilise le domaine Railway si valide
+    } else {
+      this.apiUrl = 'http://localhost:8080/api'; // Valeur par défaut pour local
+    }
+
+    console.log(`API URL utilisée : ${this.apiUrl}`);
+  }
 
   // Méthode pour uploader les fichiers
   /*uploadFiles(sqlFile: File, textFile: File): Observable<string> {
